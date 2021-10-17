@@ -4,13 +4,16 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -19,11 +22,12 @@ public class Main {
     private JPanel mainPanel;
     private JList<File> leftList;
     private JList<File> rightList;
-    private JProgressBar progressBar;
+    private JProgressBar progressBarTotal;
     private JButton btnAddFiles;
     private JButton btnRemoveFiles;
     private JButton btnStart;
     private JButton btnStop;
+    private JProgressBar progressBarCurrent;
 
     public static void main(String args[]) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
@@ -57,73 +61,90 @@ public class Main {
         mainFrame.setJMenuBar(menubar);
 
         mainFrame.getContentPane().add(mainPanel);
-        mainFrame.setSize(600, 400);
+        mainFrame.setSize(800, 400);
         mainFrame.setVisible(true);
     }
 
     private void convert(){
-        Runtime runtime = Runtime.getRuntime();
-        //String cmd = Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin", "convert.bat").toString();
-        for(int i = 0; i < leftList.getModel().getSize(); i++) {
-            String sourcePath = leftList.getModel().getElementAt(i).getAbsolutePath();
-            String source = "\"" + sourcePath + "\"";
-            String out = "\"" + sourcePath.substring(0, sourcePath.length() - 4) + ".mp4" + "\"";
 
-            //convert.bat "C:\Users\zubanov.d\Videos\Billions 1 - LostFilm.TV\Billions.S01E01.rus.LostFilm.TV.avi" "C:\Users\zubanov.d\Videos\Billions 1 - LostFilm.TV\Billions.S01E01.rus.LostFilm.TV.mp4"
-            try {
+        progressBarCurrent.setIndeterminate(true);
 
-//                runtime.exec("cmd", new String[]{"cd", Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin").toString()});
+        progressBarTotal.setMinimum(0);
+        progressBarTotal.setMaximum(leftList.getModel().getSize());
 
-//                Process process = runtime.exec(
-//                        cmd,
-//                        new String[]{source, out});
-                // ffmpeg.exe -i %1 -vcodec libx264 -bufsize 10000k -b:v 1000k -bt 1000k -maxrate 1000k -map 0:0 -map 0:1 -threads 8 %2
+        Runnable runnable = () -> {
+            Runtime runtime = Runtime.getRuntime();
+            for(int i = 0; i < leftList.getModel().getSize(); i++) {
 
-                String ffmpeg = Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin", "ffmpeg.exe").toString();
-                String cmd = "ffmpeg -i " + source + " -vcodec libx264 -bufsize 10000k -b:v 1000k -bt 1000k -maxrate 1000k -map 0:0 -map 0:1 -threads 8 " + out + " > \"C:\\IdeaProjects\\converter-plain\\ffmpeg\\bin\\log.txt\" 2>&1 \r\n";
-                //String cmd = "ffmpeg -i " + source + " -vcodec libx264 -bufsize 10000k -b:v 1000k -bt 1000k -maxrate 1000k -map 0:0 -map 0:1 -threads 8 " + out + "\r\n";
+                String sourcePath = leftList.getModel().getElementAt(i).getAbsolutePath();
+                String source = "\"" + sourcePath + "\"";
+                String out = "\"" + sourcePath.substring(0, sourcePath.length() - 4) + ".mp4" + "\"";
+                String outFileName = sourcePath.substring(0, sourcePath.length() - 4) + ".mp4";
+                File file = new File(outFileName);
+                if(file.exists()){
+                    file.delete(); // TODO
+                }
 
-                //Process process = runtime.exec(cmd);
-//                ProcessBuilder   processBuilder=new ProcessBuilder("ffmpeg", cmd);
-//                //processBuilder.directory(new File("C:\\IdeaProjects\\converter-plain\\ffmpeg\\bin"));
-//                processBuilder.redirectErrorStream();
-//                Process process = processBuilder.start();
-
-                Process process = runtime.exec("cmd");
-                OutputStream outputStream = process.getOutputStream();
-                outputStream.write(cmd.getBytes(StandardCharsets.UTF_8));
-                outputStream.flush();
-
-//                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-//                    String line;
-//                    while ((line = reader.readLine()) != null){
-//                        System.out.println(line);
-//                    }
-//                }
-                Executors.newSingleThreadExecutor().execute(readLog());
-                process.waitFor();
-
-            } catch (IOException | InterruptedException e) {
-                System.out.println(e);
-            }
-        }
-    }
-
-    private Runnable readLog(){
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
                 try {
-                    String log =Files.readString(Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin", "log.txt"));
-                    System.out.println(log);
-                    Thread.sleep(1000);
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    String ffmpeg = Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin", "ffmpeg.exe").toString();
+                    int processorsCount = Runtime.getRuntime().availableProcessors();
+                    String cmd = ffmpeg + " -y -i " + source + " -vcodec libx264 -bufsize 10000k -b:v 1000k -bt 1000k -maxrate 1000k -map 0:0 -map 0:1 -threads " + processorsCount + " " + out;
+
+                    Process process = runtime.exec(cmd);
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null){
+                            System.out.println(line);
+                            if(line.contains("Duration:")){
+                                String ss[] = line.split(",");
+                                String sss[] = ss[0].split(":");
+                                String sTime = sss[1] + ":" + sss[2] + ":" + sss[3];
+                                long totalVideoTime = getVideoSecondsLength(sTime);
+                                System.out.println(totalVideoTime);
+                                progressBarCurrent.setIndeterminate(false);
+                                progressBarCurrent.setMinimum(0);
+                                progressBarCurrent.setMaximum((int)totalVideoTime);
+                            }
+
+                            if(line.contains("frame=") && line.contains("fps")){
+                                String ss[] = line.split("=");
+                                String sTime = ss[5].replace(" bitrate", "");
+                                System.out.println(sTime);
+                                long convertedTime = getVideoSecondsLength(sTime);
+                                progressBarCurrent.setValue((int)convertedTime);
+                            }
+                        }
+                    }
+                    process.waitFor();
+
+                    DefaultListModel<File> rightListModel = new DefaultListModel<>();
+                    for(int j = 0; j < rightList.getModel().getSize(); j++){
+                        rightListModel.addElement(rightList.getModel().getElementAt(j));
+                    }
+                    rightListModel.addElement(new File(outFileName));
+                    rightList.setModel(rightListModel);
+
+                    progressBarCurrent.setIndeterminate(true);
+                    progressBarTotal.setValue(i + 1);
+
+                } catch (IOException | InterruptedException | ParseException e) {
+                    System.out.println(e);
                 }
             }
+
+            progressBarCurrent.setIndeterminate(false);
+            progressBarCurrent.setValue(progressBarCurrent.getMaximum());
         };
 
-        return runnable;
+        Executors.newSingleThreadExecutor().execute(runnable);
+    }
+
+    private long getVideoSecondsLength(String time) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date reference = dateFormat.parse("00:00:00");
+        Date date = dateFormat.parse(time);
+        long seconds = (date.getTime() - reference.getTime()) / 1000L;
+        return seconds;
     }
 
     private void fileChooser(){
