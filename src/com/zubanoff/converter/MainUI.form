@@ -17,28 +17,35 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="75e48" class="javax.swing.JButton" binding="button1" default-binding="true">
+          <component id="75e48" class="javax.swing.JButton" binding="btnAddFiles">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <font name="JetBrains Mono"/>
+              <foreground color="-16744448"/>
+              <text value="Add"/>
             </properties>
           </component>
-          <component id="e4cef" class="javax.swing.JButton" binding="button2" default-binding="true">
+          <component id="e4cef" class="javax.swing.JButton" binding="btnRemoveFiles">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <enabled value="false"/>
+              <font name="JetBrains Mono"/>
+              <foreground color="-3932160"/>
+              <text value="Remove"/>
             </properties>
           </component>
-          <component id="39928" class="javax.swing.JButton" binding="button3" default-binding="true">
+          <component id="39928" class="javax.swing.JButton" binding="btnStart">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <enabled value="false"/>
+              <text value="Start"/>
             </properties>
           </component>
-          <component id="9c248" class="javax.swing.JButton" binding="button4" default-binding="true">
+          <component id="9c248" class="javax.swing.JButton" binding="btnStop">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <enabled value="false"/>
+              <text value="Stop"/>
             </properties>
           </component>
         </children>
@@ -84,7 +91,7 @@
           </scrollpane>
         </children>
       </splitpane>
-      <component id="f7bd4" class="javax.swing.JProgressBar" binding="progressBar1" default-binding="true">
+      <component id="f7bd4" class="javax.swing.JProgressBar" binding="progressBar">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
