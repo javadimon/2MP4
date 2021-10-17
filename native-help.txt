@@ -1,0 +1,6 @@
+java -agentlib:native-image-agent=config-output-dir=META-INF/native-image -jar .\converter.jar
+
+before convert
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+native-image -H:ConfigurationFileDirectories=C:\IdeaProjects\converter-plain\out\artifacts\converter\META-INF\native-image -jar converter.jar --verbose
