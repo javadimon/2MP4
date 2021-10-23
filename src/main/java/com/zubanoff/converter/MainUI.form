@@ -22,7 +22,7 @@
             <properties>
               <font name="JetBrains Mono"/>
               <foreground color="-16744448"/>
-              <text value="Add"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="e4cef" class="javax.swing.JButton" binding="btnRemoveFiles">
@@ -31,26 +31,32 @@
               <enabled value="false"/>
               <font name="JetBrains Mono"/>
               <foreground color="-3932160"/>
-              <text value="Remove"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="ee56" class="javax.swing.JSeparator">
+            <constraints/>
+            <properties>
+              <orientation value="1"/>
             </properties>
           </component>
           <component id="39928" class="javax.swing.JButton" binding="btnStart">
             <constraints/>
             <properties>
               <enabled value="false"/>
-              <text value="Start"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="9c248" class="javax.swing.JButton" binding="btnStop">
             <constraints/>
             <properties>
               <enabled value="false"/>
-              <text value="Stop"/>
+              <text value=""/>
             </properties>
           </component>
         </children>
       </toolbar>
-      <splitpane id="f239b">
+      <splitpane id="f239b" binding="splitPanel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>

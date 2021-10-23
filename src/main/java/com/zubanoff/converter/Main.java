@@ -2,12 +2,15 @@ package com.zubanoff.converter;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,8 +31,9 @@ public class Main {
     private JButton btnStart;
     private JButton btnStop;
     private JProgressBar progressBarCurrent;
+    private JSplitPane splitPanel;
 
-    public static void main(String args[]) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public static void main(String args[]) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
@@ -37,12 +41,29 @@ public class Main {
         main.init();
     }
 
-    private void init(){
+    private void init() throws IOException {
 
         btnAddFiles.addActionListener(e -> fileChooser());
         leftList.addListSelectionListener(e -> btnRemoveFiles.setEnabled(true));
+
         btnRemoveFiles.addActionListener(e -> removeSelectedFiles());
-        btnStart.addActionListener(e -> convert());
+
+        btnStart.addActionListener(e -> {
+            btnAddFiles.setEnabled(false);
+            btnRemoveFiles.setEnabled(false);
+            btnStart.setEnabled(false);
+            btnStop.setEnabled(true);
+            convert();
+        });
+
+        btnStop.addActionListener(e -> {
+            btnAddFiles.setEnabled(true);
+            btnRemoveFiles.setEnabled(true);
+            btnStart.setEnabled(true);
+            btnStop.setEnabled(false);
+            stopConverting();
+        });
+
 
         JFrame mainFrame = new JFrame();
         mainFrame.addWindowListener(new WindowAdapter() {
@@ -63,6 +84,33 @@ public class Main {
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setSize(800, 400);
         mainFrame.setVisible(true);
+        mainFrame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent event){
+                splitPanel.setDividerLocation(mainFrame.getWidth() / 2);
+            }
+        });
+
+        splitPanel.setDividerLocation(400);
+
+        byte[] bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "add.png"));
+        ImageIcon imageIcon = new ImageIcon(bytes, "Add source video");
+        btnAddFiles.setIcon(imageIcon);
+
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "remove.png"));
+        imageIcon = new ImageIcon(bytes, "Remove source video");
+        btnRemoveFiles.setIcon(imageIcon);
+
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "start.png"));
+        imageIcon = new ImageIcon(bytes, "Start converting");
+        btnStart.setIcon(imageIcon);
+
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "stop.png"));
+        imageIcon = new ImageIcon(bytes, "Stop converting");
+        btnStop.setIcon(imageIcon);
+    }
+
+    private void stopConverting(){
+        // TODO
     }
 
     private void convert(){
@@ -148,6 +196,7 @@ public class Main {
     }
 
     private void fileChooser(){
+
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Source video files");
         jfc.setMultiSelectionEnabled(true);
