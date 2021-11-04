@@ -34,12 +34,6 @@
               <text value=""/>
             </properties>
           </component>
-          <component id="ee56" class="javax.swing.JSeparator">
-            <constraints/>
-            <properties>
-              <orientation value="1"/>
-            </properties>
-          </component>
           <component id="39928" class="javax.swing.JButton" binding="btnStart">
             <constraints/>
             <properties>
