@@ -26,10 +26,11 @@ public class Main {
     private JProgressBar progressBarTotal;
     private JButton btnAddFiles;
     private JButton btnRemoveFiles;
-    private JButton btnStart;
+    private JButton btnStartAll;
     private JButton btnStop;
     private JProgressBar progressBarCurrent;
     private JSplitPane splitPanel;
+    private JButton btnStartSelected;
     private Process process;
     private boolean isDestroyProcess = false;
     private final Properties properties;
@@ -39,7 +40,7 @@ public class Main {
         properties.load(Files.newBufferedReader(Paths.get(System.getProperty("user.dir"), "ffmpeg", "converter.properties")));
     }
 
-    public static void main(String args[]) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
@@ -56,19 +57,22 @@ public class Main {
         btnRemoveFiles.addActionListener(e -> removeSelectedFiles());
         btnRemoveFiles.setFocusPainted(false);
 
-        btnStart.addActionListener(e -> {
+        btnStartAll.addActionListener(e -> {
             btnAddFiles.setEnabled(false);
             btnRemoveFiles.setEnabled(false);
-            btnStart.setEnabled(false);
+            btnStartAll.setEnabled(false);
             btnStop.setEnabled(true);
             convert();
         });
-        btnStart.setFocusPainted(false);
+        btnStartAll.setFocusPainted(false);
+
+        btnStartSelected.setFocusPainted(false);
+        btnStartSelected.setEnabled(false);
 
         btnStop.addActionListener(e -> {
             btnAddFiles.setEnabled(true);
             btnRemoveFiles.setEnabled(true);
-            btnStart.setEnabled(true);
+            btnStartAll.setEnabled(true);
             btnStop.setEnabled(false);
             stopConverting();
         });
@@ -120,9 +124,13 @@ public class Main {
         imageIcon = new ImageIcon(bytes, "Remove source video");
         btnRemoveFiles.setIcon(imageIcon);
 
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "all.png"));
+        imageIcon = new ImageIcon(bytes, "Start converting");
+        btnStartAll.setIcon(imageIcon);
+
         bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "start.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
-        btnStart.setIcon(imageIcon);
+        btnStartSelected.setIcon(imageIcon);
 
         bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "stop.png"));
         imageIcon = new ImageIcon(bytes, "Stop converting");
@@ -223,7 +231,7 @@ public class Main {
             }
 
             btnStop.setEnabled(false);
-            btnStart.setEnabled(true);
+            btnStartAll.setEnabled(true);
             btnAddFiles.setEnabled(true);
         };
 
@@ -266,7 +274,7 @@ public class Main {
             leftList.setModel(leftListModel);
 
             if(leftListModel.getSize() > 0){
-                btnStart.setEnabled(true);
+                btnStartAll.setEnabled(true);
             }
         }
     }
@@ -289,7 +297,7 @@ public class Main {
 
         if(listModel.isEmpty()){
             btnRemoveFiles.setEnabled(false);
-            btnStart.setEnabled(false);
+            btnStartAll.setEnabled(false);
         }
     }
 }

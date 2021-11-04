@@ -23,6 +23,7 @@
               <font name="JetBrains Mono"/>
               <foreground color="-16744448"/>
               <text value=""/>
+              <toolTipText value="Add files for convert"/>
             </properties>
           </component>
           <component id="e4cef" class="javax.swing.JButton" binding="btnRemoveFiles">
@@ -32,13 +33,22 @@
               <font name="JetBrains Mono"/>
               <foreground color="-3932160"/>
               <text value=""/>
+              <toolTipText value="Remove selected files"/>
             </properties>
           </component>
-          <component id="39928" class="javax.swing.JButton" binding="btnStart">
+          <component id="39928" class="javax.swing.JButton" binding="btnStartAll">
             <constraints/>
             <properties>
               <enabled value="false"/>
               <text value=""/>
+              <toolTipText value="Convert all files"/>
+            </properties>
+          </component>
+          <component id="c7150" class="javax.swing.JButton" binding="btnStartSelected">
+            <constraints/>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Convert selected files"/>
             </properties>
           </component>
           <component id="9c248" class="javax.swing.JButton" binding="btnStop">
@@ -46,6 +56,7 @@
             <properties>
               <enabled value="false"/>
               <text value=""/>
+              <toolTipText value="Stop convertation"/>
             </properties>
           </component>
         </children>
