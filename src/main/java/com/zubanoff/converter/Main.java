@@ -92,18 +92,25 @@ public class Main {
         mainFrame.setIconImage(frameIcon.getImage());
         mainFrame.setTitle("2MP4");
 
-        JMenuBar menubar = new JMenuBar();
-        JMenu menu = new JMenu("File");
+        JMenuBar menuBar = new JMenuBar();
+        JMenu mnuFile = new JMenu("File");
         JMenuItem mnuExit = new JMenuItem("Exit");
         bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "out.png"));
         ImageIcon imageIcon = new ImageIcon(bytes, "Exit");
         mnuExit.setIcon(imageIcon);
-        menu.add(mnuExit);
+        mnuFile.add(mnuExit);
         mnuExit.addActionListener(actionEvent -> System.exit(0));
+        menuBar.add(mnuFile);
 
-        menubar.add(menu);
-        mainFrame.setJMenuBar(menubar);
-        menu.grabFocus();
+        JMenu mnuAbout = new JMenu("About");
+        JMenuItem mnuAboutItem = new JMenuItem("About");
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "about.png"));
+        mnuAboutItem.setIcon(new ImageIcon(bytes, "About"));
+        mnuAbout.add(mnuAboutItem);
+        menuBar.add(mnuAbout);
+
+        mainFrame.setJMenuBar(menuBar);
+        mnuFile.grabFocus();
 
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setSize(800, 400);
@@ -165,8 +172,9 @@ public class Main {
 
                 String sourcePath = leftList.getModel().getElementAt(i).getAbsolutePath();
                 String source = "\"" + sourcePath + "\"";
-                String out = "\"" + sourcePath.substring(0, sourcePath.length() - 4) + ".mp4" + "\"";
-                String outFileName = sourcePath.substring(0, sourcePath.length() - 4) + ".mp4";
+                String name = sourcePath.substring(0, sourcePath.length() - 4);
+                String out = "\"" + name + ".mp4" + "\"";
+                String outFileName = name + ".mp4";
                 File file = new File(outFileName);
                 if(file.exists()){
                     file.delete(); // TODO
@@ -183,20 +191,16 @@ public class Main {
                         while ((line = reader.readLine()) != null){
                             System.out.println(line);
                             if(line.contains("Duration:")){
-                                String ss[] = line.split(",");
-                                String sss[] = ss[0].split(":");
+                                String[] sss = line.split(",")[0].split(":");
                                 String sTime = sss[1] + ":" + sss[2] + ":" + sss[3];
                                 long totalVideoTime = getVideoSecondsLength(sTime);
-                                System.out.println(totalVideoTime);
                                 progressBarCurrent.setIndeterminate(false);
                                 progressBarCurrent.setMinimum(0);
                                 progressBarCurrent.setMaximum((int)totalVideoTime);
                             }
 
                             if(line.contains("frame=") && line.contains("fps")){
-                                String ss[] = line.split("=");
-                                String sTime = ss[5].replace(" bitrate", "");
-                                System.out.println(sTime);
+                                String sTime = line.split("=")[5].replace(" bitrate", "");
                                 long convertedTime = getVideoSecondsLength(sTime);
                                 int min = progressBarCurrent.getMaximum() / 100;
                                 int value = Math.max((int)convertedTime, min);
@@ -254,23 +258,15 @@ public class Main {
 
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File[] files = jfc.getSelectedFiles();
-            System.out.println("Directories found\n");
-            Arrays.asList(files).forEach(x -> {
-                if (x.isDirectory()) {
-                    System.out.println(x.getName());
-                }
-            });
-            System.out.println("\n- - - - - - - - - - -\n");
-            System.out.println("Files Found\n");
-            Arrays.asList(files).forEach(x -> {
-                if (x.isFile()) {
-                    System.out.println(x.getAbsolutePath());
-                }
-            });
+
+            List<File> addedFiles = new ArrayList<>();
+            for(int i = 0; i < leftList.getModel().getSize(); i++){
+                addedFiles.add(leftList.getModel().getElementAt(i));
+            }
 
             DefaultListModel<File> leftListModel = new DefaultListModel<>();
-            leftListModel.addAll(List.of(files));
+            leftListModel.addAll(addedFiles);
+            leftListModel.addAll(List.of(jfc.getSelectedFiles()));
             leftList.setModel(leftListModel);
 
             if(leftListModel.getSize() > 0){
