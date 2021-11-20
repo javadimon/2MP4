@@ -1,0 +1,4 @@
+increase font in list
+add icon to file chooser
+add help to menu
+force kill ffmpeg

@@ -7,10 +7,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -23,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.concurrent.Executors;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.FontUIResource;
@@ -45,6 +42,8 @@ public class Main {
     private Process process;
     private boolean isDestroyProcess = false;
     private final Properties properties;
+    private Converter converter;
+    private static final String USER_DIR = Paths.get(System.getProperty("user.dir")).toString();
 
     public Main() throws IOException {
         properties = new Properties();
@@ -100,7 +99,7 @@ public class Main {
         });
 
         //byte[] bytes = Files.readAllBytes(getFileFromResource("img/mp4.png").toPath());
-        byte[] bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "mp4.png"));
+        byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "mp4.png"));
         ImageIcon frameIcon = new ImageIcon(bytes, "2MP4");
         mainFrame.setIconImage(frameIcon.getImage());
         mainFrame.setTitle("2MP4");
@@ -109,7 +108,7 @@ public class Main {
         JMenu mnuFile = new JMenu("File");
         JMenuItem mnuExit = new JMenuItem("Exit");
         //bytes = Files.readAllBytes(getFileFromResource("img/out.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "out.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "out.png"));
         ImageIcon imageIcon = new ImageIcon(bytes, "Exit");
         mnuExit.setIcon(imageIcon);
         mnuFile.add(mnuExit);
@@ -119,7 +118,7 @@ public class Main {
         JMenu mnuAbout = new JMenu("About");
         JMenuItem mnuAboutItem = new JMenuItem("About");
         //bytes = Files.readAllBytes(getFileFromResource("img/about.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "about.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "about.png"));
         mnuAboutItem.setIcon(new ImageIcon(bytes, "About"));
         mnuAbout.add(mnuAboutItem);
         menuBar.add(mnuAbout);
@@ -139,125 +138,39 @@ public class Main {
         splitPanel.setDividerLocation(400);
 
         //bytes = Files.readAllBytes(getFileFromResource("img/add.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "add.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "add.png"));
         ImageIcon imageExit = new ImageIcon(bytes, "Add source video");
         btnAddFiles.setIcon(imageExit);
 
         //bytes = Files.readAllBytes(getFileFromResource("img/remove.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "remove.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "remove.png"));
         imageIcon = new ImageIcon(bytes, "Remove source video");
         btnRemoveFiles.setIcon(imageIcon);
 
         //bytes = Files.readAllBytes(getFileFromResource("img/all.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "all.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "all.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartAll.setIcon(imageIcon);
 
         //bytes = Files.readAllBytes(getFileFromResource("img/start.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "start.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "start.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartSelected.setIcon(imageIcon);
 
         //bytes = Files.readAllBytes(getFileFromResource("img/stop.png").toPath());
-        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "img", "stop.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "stop.png"));
         imageIcon = new ImageIcon(bytes, "Stop converting");
         btnStop.setIcon(imageIcon);
+
+        converter = new Converter(progressBarCurrent, progressBarTotal, leftList, rightList, btnStop, btnStartAll, btnAddFiles, properties);
     }
 
     private void stopConverting() {
-        isDestroyProcess = true;
-        process.destroyForcibly();
-        progressBarCurrent.setValue(0);
-        progressBarTotal.setValue(0);
+        converter.stopConverting();
     }
 
     private void convert() {
-
-        isDestroyProcess = false;
-
-        progressBarCurrent.setIndeterminate(true);
-
-        progressBarTotal.setMinimum(0);
-        progressBarTotal.setMaximum(leftList.getModel().getSize());
-
-        Runnable runnable = () -> {
-            Runtime runtime = Runtime.getRuntime();
-            for (int i = 0; i < leftList.getModel().getSize(); i++) {
-
-                if (isDestroyProcess) {
-                    continue;
-                }
-
-                String sourcePath = leftList.getModel().getElementAt(i).getAbsolutePath();
-                String source = "\"" + sourcePath + "\"";
-                String name = sourcePath.substring(0, sourcePath.length() - 4);
-                String out = "\"" + name + ".mp4" + "\"";
-                String outFileName = name + ".mp4";
-                File file = new File(outFileName);
-                if (file.exists()) {
-                    file.delete(); // TODO
-                }
-
-                try {
-                    String ffmpeg = Paths.get(System.getProperty("user.dir"), "ffmpeg", "bin", "ffmpeg.exe").toString();
-                    int processorsCount = Runtime.getRuntime().availableProcessors();
-                    String cmd = ffmpeg + " -y -i " + source + " " + properties.getProperty("default") + " " + processorsCount + " " + out;
-
-                    process = runtime.exec(cmd);
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            System.out.println(line);
-                            if (line.contains("Duration:")) {
-                                String[] sss = line.split(",")[0].split(":");
-                                String sTime = sss[1] + ":" + sss[2] + ":" + sss[3];
-                                long totalVideoTime = getVideoSecondsLength(sTime);
-                                progressBarCurrent.setIndeterminate(false);
-                                progressBarCurrent.setMinimum(0);
-                                progressBarCurrent.setMaximum((int) totalVideoTime);
-                            }
-
-                            if (line.contains("frame=") && line.contains("fps")) {
-                                String sTime = line.split("=")[5].replace(" bitrate", "");
-                                long convertedTime = getVideoSecondsLength(sTime);
-                                int min = progressBarCurrent.getMaximum() / 100;
-                                int value = Math.max((int) convertedTime, min);
-                                progressBarCurrent.setValue(value);
-                            }
-                        }
-                    }
-                    process.waitFor();
-
-                    if (!isDestroyProcess) {
-                        DefaultListModel<File> rightListModel = new DefaultListModel<>();
-                        for (int j = 0; j < rightList.getModel().getSize(); j++) {
-                            rightListModel.addElement(rightList.getModel().getElementAt(j));
-                        }
-                        rightListModel.addElement(new File(outFileName));
-                        rightList.setModel(rightListModel);
-
-                        progressBarCurrent.setIndeterminate(true);
-                        progressBarTotal.setValue(i + 1);
-                    }
-
-                } catch (IOException | InterruptedException | ParseException e) {
-                    System.out.println(e);
-                }
-            }
-
-            progressBarCurrent.setIndeterminate(false);
-            if (!isDestroyProcess) {
-                progressBarCurrent.setValue(progressBarCurrent.getMaximum());
-            } else {
-                progressBarCurrent.setValue(0);
-            }
-
-            btnStop.setEnabled(false);
-            btnStartAll.setEnabled(true);
-            btnAddFiles.setEnabled(true);
-        };
-
-        Executors.newSingleThreadExecutor().execute(runnable);
+        converter.convert();
     }
 
     private long getVideoSecondsLength(String time) throws ParseException {
