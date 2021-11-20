@@ -13,14 +13,6 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-<!--    <dependencies>-->
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.mojo/ideauidesigner-maven-plugin &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.codehaus.mojo</groupId>-->
-<!--            <artifactId>ideauidesigner-maven-plugin</artifactId>-->
-<!--            <version>1.0-beta-1</version>-->
-<!--        </dependency>-->
-<!--    </dependencies>-->
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.intellij/forms_rt -->
         <dependency>
