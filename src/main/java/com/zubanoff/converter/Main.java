@@ -9,15 +9,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -40,10 +34,10 @@ public class Main {
     private JProgressBar progressBarCurrent;
     private JSplitPane splitPanel;
     private JButton btnStartSelected;
-    private Process process;
     private final Properties properties;
     private Converter converter;
     private static final String USER_DIR = Paths.get(System.getProperty("user.dir")).toString();
+    private static final String USER_DIR_IMG = Paths.get(System.getProperty("user.dir"), "img").toString();
     private static final List<String> EXTENSIONS = List.of(".avi", ".mov", ".mkv", ".3gp", ".wmv", ".wm", ".3g2", ".dat", ".m4v", ".mod",
             ".mpeg", ".mpg", ".vob", ".yuv");
 
@@ -52,7 +46,7 @@ public class Main {
         properties.load(Files.newBufferedReader(Paths.get(USER_DIR, "ffmpeg", "converter.properties")));
     }
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
@@ -60,7 +54,7 @@ public class Main {
         main.init();
     }
 
-    private void init() throws IOException, URISyntaxException {
+    private void init() throws IOException {
 
         btnAddFiles.addActionListener(e -> {
             try {
@@ -106,7 +100,7 @@ public class Main {
             }
         });
 
-        byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "mp4.png"));
+        byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "mp4.png"));
         ImageIcon frameIcon = new ImageIcon(bytes, "2MP4");
         mainFrame.setIconImage(frameIcon.getImage());
         mainFrame.setTitle("2MP4");
@@ -114,7 +108,7 @@ public class Main {
         JMenuBar menuBar = new JMenuBar();
         JMenu mnuFile = new JMenu("File");
         JMenuItem mnuExit = new JMenuItem("Exit");
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "out.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "out.png"));
         ImageIcon imageIcon = new ImageIcon(bytes, "Exit");
         mnuExit.setIcon(imageIcon);
         mnuFile.add(mnuExit);
@@ -123,7 +117,7 @@ public class Main {
 
         JMenu mnuAbout = new JMenu("Help");
         JMenuItem mnuAboutItem = new JMenuItem("About");
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "about.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "about.png"));
         mnuAboutItem.setIcon(new ImageIcon(bytes, "About"));
         mnuAbout.add(mnuAboutItem);
         mnuAboutItem.addActionListener(actionEvent -> showDialogAbout());
@@ -143,27 +137,28 @@ public class Main {
 
         splitPanel.setDividerLocation(400);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "add.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "add.png"));
         ImageIcon imageExit = new ImageIcon(bytes, "Add source video");
         btnAddFiles.setIcon(imageExit);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "remove.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "remove.png"));
         imageIcon = new ImageIcon(bytes, "Remove source video");
         btnRemoveFiles.setIcon(imageIcon);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "all.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "all.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartAll.setIcon(imageIcon);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "start.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "start.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartSelected.setIcon(imageIcon);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "stop.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "stop.png"));
         imageIcon = new ImageIcon(bytes, "Stop converting");
         btnStop.setIcon(imageIcon);
 
-        converter = new Converter(progressBarCurrent, progressBarTotal, leftList, rightList, btnStop, btnStartAll, btnAddFiles, properties);
+        converter = new Converter(progressBarCurrent, progressBarTotal, leftList, rightList,
+                btnStop, btnStartAll, btnAddFiles, properties);
     }
 
     private void showDialogAbout() {
@@ -189,18 +184,9 @@ public class Main {
         converter.convert();
     }
 
-    private long getVideoSecondsLength(String time) throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Date reference = dateFormat.parse("00:00:00");
-        Date date = dateFormat.parse(time);
-        return (date.getTime() - reference.getTime()) / 1000L;
-    }
-
     private void fileChooser() throws IOException {
 
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "mp4.png"));
-        ImageIcon frameIcon = new ImageIcon(bytes, "2MP4");
         jfc.setDialogTitle("Source video files");
         jfc.setMultiSelectionEnabled(true);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -249,17 +235,6 @@ public class Main {
         if (listModel.isEmpty()) {
             btnRemoveFiles.setEnabled(false);
             btnStartAll.setEnabled(false);
-        }
-    }
-
-    private File getFileFromResource(String fileName) throws URISyntaxException {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return new File(resource.toURI());
         }
     }
 
