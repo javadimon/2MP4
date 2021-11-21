@@ -60,7 +60,8 @@ public class Converter {
                 String outFileName = name + ".mp4";
                 File file = new File(outFileName);
                 if (file.exists()) {
-                    file.delete(); // TODO
+                    boolean success = file.delete();
+                    System.out.println("Deleted " + success);
                 }
 
                 try {
@@ -80,13 +81,13 @@ public class Converter {
                                 progressBarCurrent.setIndeterminate(false);
                                 progressBarCurrent.setMinimum(0);
                                 progressBarCurrent.setMaximum((int) totalVideoTime);
-                                progressBarCurrent.setValue((int) ((totalVideoTime / 100) * 2));
+                                progressBarCurrent.setValue(((int)totalVideoTime / 100) * 2);
                             }
 
                             if (line.contains("frame=") && line.contains("fps")) {
                                 String sTime = line.split("=")[5].replace(" bitrate", "");
                                 long convertedTime = getVideoSecondsLength(sTime);
-                                int min = (int) ((progressBarCurrent.getMaximum() / 100) * 2);
+                                int min = ((progressBarCurrent.getMaximum() / 100) * 2);
                                 if(convertedTime > min){
                                     progressBarCurrent.setValue((int) convertedTime);
                                 }
