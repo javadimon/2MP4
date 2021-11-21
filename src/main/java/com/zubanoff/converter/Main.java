@@ -28,6 +28,7 @@ import javax.swing.text.StyleContext;
 
 public class Main {
 
+    private final JFrame mainFrame = new JFrame();
     private JPanel mainPanel;
     private JList<File> leftList;
     private JList<File> rightList;
@@ -40,7 +41,6 @@ public class Main {
     private JSplitPane splitPanel;
     private JButton btnStartSelected;
     private Process process;
-    private boolean isDestroyProcess = false;
     private final Properties properties;
     private Converter converter;
     private static final String USER_DIR = Paths.get(System.getProperty("user.dir")).toString();
@@ -60,7 +60,13 @@ public class Main {
 
     private void init() throws IOException, URISyntaxException {
 
-        btnAddFiles.addActionListener(e -> fileChooser());
+        btnAddFiles.addActionListener(e -> {
+            try {
+                fileChooser();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         btnAddFiles.setFocusPainted(false);
         leftList.addListSelectionListener(e -> btnRemoveFiles.setEnabled(true));
 
@@ -89,16 +95,15 @@ public class Main {
         btnStop.setFocusPainted(false);
 
 
-        JFrame mainFrame = new JFrame();
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                converter.stopConverting();
                 super.windowClosing(e);
                 System.exit(0);
             }
         });
 
-        //byte[] bytes = Files.readAllBytes(getFileFromResource("img/mp4.png").toPath());
         byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "mp4.png"));
         ImageIcon frameIcon = new ImageIcon(bytes, "2MP4");
         mainFrame.setIconImage(frameIcon.getImage());
@@ -107,7 +112,6 @@ public class Main {
         JMenuBar menuBar = new JMenuBar();
         JMenu mnuFile = new JMenu("File");
         JMenuItem mnuExit = new JMenuItem("Exit");
-        //bytes = Files.readAllBytes(getFileFromResource("img/out.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "out.png"));
         ImageIcon imageIcon = new ImageIcon(bytes, "Exit");
         mnuExit.setIcon(imageIcon);
@@ -115,12 +119,12 @@ public class Main {
         mnuExit.addActionListener(actionEvent -> System.exit(0));
         menuBar.add(mnuFile);
 
-        JMenu mnuAbout = new JMenu("About");
+        JMenu mnuAbout = new JMenu("Help");
         JMenuItem mnuAboutItem = new JMenuItem("About");
-        //bytes = Files.readAllBytes(getFileFromResource("img/about.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "about.png"));
         mnuAboutItem.setIcon(new ImageIcon(bytes, "About"));
         mnuAbout.add(mnuAboutItem);
+        mnuAboutItem.addActionListener(actionEvent -> showDialogAbout());
         menuBar.add(mnuAbout);
 
         mainFrame.setJMenuBar(menuBar);
@@ -137,32 +141,42 @@ public class Main {
 
         splitPanel.setDividerLocation(400);
 
-        //bytes = Files.readAllBytes(getFileFromResource("img/add.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "add.png"));
         ImageIcon imageExit = new ImageIcon(bytes, "Add source video");
         btnAddFiles.setIcon(imageExit);
 
-        //bytes = Files.readAllBytes(getFileFromResource("img/remove.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "remove.png"));
         imageIcon = new ImageIcon(bytes, "Remove source video");
         btnRemoveFiles.setIcon(imageIcon);
 
-        //bytes = Files.readAllBytes(getFileFromResource("img/all.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "all.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartAll.setIcon(imageIcon);
 
-        //bytes = Files.readAllBytes(getFileFromResource("img/start.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "start.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartSelected.setIcon(imageIcon);
 
-        //bytes = Files.readAllBytes(getFileFromResource("img/stop.png").toPath());
         bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "stop.png"));
         imageIcon = new ImageIcon(bytes, "Stop converting");
         btnStop.setIcon(imageIcon);
 
         converter = new Converter(progressBarCurrent, progressBarTotal, leftList, rightList, btnStop, btnStartAll, btnAddFiles, properties);
+    }
+
+    private void showDialogAbout() {
+        JDialog dlgAbout = new JDialog(mainFrame, "About", true);
+        dlgAbout.setSize(460, 80);
+        dlgAbout.setLocationRelativeTo(mainFrame);
+
+        JLabel lblAbout = new JLabel("Made by Dmitry Zubanoff for all people on planet Earth. Enjoy! dmitry@zubanoff.com");
+        lblAbout.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        int gap = 5;
+        dlgAbout.getContentPane().setLayout(new BorderLayout(gap, gap));
+        dlgAbout.getRootPane().setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+        dlgAbout.add(lblAbout, BorderLayout.CENTER);
+
+        dlgAbout.setVisible(true);
     }
 
     private void stopConverting() {
@@ -180,14 +194,16 @@ public class Main {
         return (date.getTime() - reference.getTime()) / 1000L;
     }
 
-    private void fileChooser() {
+    private void fileChooser() throws IOException {
 
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        byte[] bytes = Files.readAllBytes(Paths.get(USER_DIR, "img", "mp4.png"));
+        ImageIcon frameIcon = new ImageIcon(bytes, "2MP4");
         jfc.setDialogTitle("Source video files");
         jfc.setMultiSelectionEnabled(true);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        int returnValue = jfc.showOpenDialog(null);
+        int returnValue = jfc.showOpenDialog(mainFrame);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
 
             List<File> addedFiles = new ArrayList<>();
@@ -293,12 +309,16 @@ public class Main {
         final JScrollPane scrollPane1 = new JScrollPane();
         splitPanel.setLeftComponent(scrollPane1);
         leftList = new JList();
+        Font leftListFont = this.$$$getFont$$$(null, -1, 12, leftList.getFont());
+        if (leftListFont != null) leftList.setFont(leftListFont);
         final DefaultListModel defaultListModel1 = new DefaultListModel();
         leftList.setModel(defaultListModel1);
         scrollPane1.setViewportView(leftList);
         final JScrollPane scrollPane2 = new JScrollPane();
         splitPanel.setRightComponent(scrollPane2);
         rightList = new JList();
+        Font rightListFont = this.$$$getFont$$$(null, -1, 12, rightList.getFont());
+        if (rightListFont != null) rightList.setFont(rightListFont);
         scrollPane2.setViewportView(rightList);
         progressBarTotal = new JProgressBar();
         mainPanel.add(progressBarTotal, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

@@ -82,6 +82,7 @@
               <component id="2a6d5" class="javax.swing.JList" binding="leftList">
                 <constraints/>
                 <properties>
+                  <font size="12"/>
                   <model/>
                 </properties>
               </component>
@@ -96,7 +97,9 @@
             <children>
               <component id="a61d0" class="javax.swing.JList" binding="rightList">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <font size="12"/>
+                </properties>
               </component>
             </children>
           </scrollpane>

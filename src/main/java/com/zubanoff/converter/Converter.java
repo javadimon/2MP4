@@ -135,9 +135,11 @@ public class Converter {
     }
 
     public void stopConverting() {
-        isDestroyProcess = true;
-        process.destroyForcibly();
-        progressBarCurrent.setValue(0);
-        progressBarTotal.setValue(0);
+        if(process != null){
+            isDestroyProcess = true;
+            process.destroyForcibly();
+            progressBarCurrent.setValue(0);
+            progressBarTotal.setValue(0);
+        }
     }
 }
