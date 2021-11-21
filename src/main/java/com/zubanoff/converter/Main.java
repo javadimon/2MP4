@@ -44,12 +44,12 @@ public class Main {
     private final Properties properties;
     private Converter converter;
     private static final String USER_DIR = Paths.get(System.getProperty("user.dir")).toString();
-    final List<String> ext = List.of(".avi", ".mov", ".mkv", ".3gp", ".wmv", ".wm", ".3g2", ".dat", ".m4v", ".mod",
+    private static final List<String> EXTENSIONS = List.of(".avi", ".mov", ".mkv", ".3gp", ".wmv", ".wm", ".3g2", ".dat", ".m4v", ".mod",
             ".mpeg", ".mpg", ".vob", ".yuv");
 
     public Main() throws IOException {
         properties = new Properties();
-        properties.load(Files.newBufferedReader(Paths.get(System.getProperty("user.dir"), "ffmpeg", "converter.properties")));
+        properties.load(Files.newBufferedReader(Paths.get(USER_DIR, "ffmpeg", "converter.properties")));
     }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -168,10 +168,10 @@ public class Main {
 
     private void showDialogAbout() {
         JDialog dlgAbout = new JDialog(mainFrame, "About", true);
-        dlgAbout.setSize(460, 80);
+        dlgAbout.setSize(540, 80);
         dlgAbout.setLocationRelativeTo(mainFrame);
 
-        JLabel lblAbout = new JLabel("Made by Dmitry Zubanoff for all people on planet Earth. Enjoy! dmitry@zubanoff.com");
+        JLabel lblAbout = new JLabel("Made by Dmitry Zubanoff aka @javadimon with pleasure only for you. Enjoy! dmitry@zubanoff.com");
         lblAbout.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         int gap = 5;
         dlgAbout.getContentPane().setLayout(new BorderLayout(gap, gap));
@@ -217,7 +217,7 @@ public class Main {
             leftListModel.addAll(addedFiles);
             List<File> filteredFiles = new ArrayList<>();
             for (File file : jfc.getSelectedFiles()) {
-                if (ext.stream().anyMatch(s -> file.getName().toLowerCase().contains(s))) {
+                if (EXTENSIONS.stream().anyMatch(s -> file.getName().toLowerCase().contains(s))) {
                     filteredFiles.add(file);
                 }
             }
