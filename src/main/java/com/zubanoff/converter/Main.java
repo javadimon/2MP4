@@ -44,6 +44,8 @@ public class Main {
     private final Properties properties;
     private Converter converter;
     private static final String USER_DIR = Paths.get(System.getProperty("user.dir")).toString();
+    final List<String> ext = List.of(".avi", ".mov", ".mkv", ".3gp", ".wmv", ".wm", ".3g2", ".dat", ".m4v", ".mod",
+            ".mpeg", ".mpg", ".vob", ".yuv");
 
     public Main() throws IOException {
         properties = new Properties();
@@ -213,7 +215,13 @@ public class Main {
 
             DefaultListModel<File> leftListModel = new DefaultListModel<>();
             leftListModel.addAll(addedFiles);
-            leftListModel.addAll(List.of(jfc.getSelectedFiles()));
+            List<File> filteredFiles = new ArrayList<>();
+            for (File file : jfc.getSelectedFiles()) {
+                if (ext.stream().anyMatch(s -> file.getName().toLowerCase().contains(s))) {
+                    filteredFiles.add(file);
+                }
+            }
+            leftListModel.addAll(filteredFiles);
             leftList.setModel(leftListModel);
 
             if (leftListModel.getSize() > 0) {
