@@ -64,6 +64,7 @@ public class Main {
             }
         });
         btnAddFiles.setFocusPainted(false);
+        btnAddFiles.setSize(32, 32);
         leftList.addListSelectionListener(e -> btnRemoveFiles.setEnabled(true));
 
         btnRemoveFiles.addActionListener(e -> removeSelectedFiles());
@@ -77,9 +78,6 @@ public class Main {
             convert();
         });
         btnStartAll.setFocusPainted(false);
-
-        btnStartSelected.setFocusPainted(false);
-        btnStartSelected.setEnabled(false);
 
         btnStop.addActionListener(e -> {
             btnAddFiles.setEnabled(true);
@@ -137,23 +135,19 @@ public class Main {
 
         splitPanel.setDividerLocation(400);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "add.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "add_16.png"));
         ImageIcon imageExit = new ImageIcon(bytes, "Add source video");
         btnAddFiles.setIcon(imageExit);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "remove.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "remove_16.png"));
         imageIcon = new ImageIcon(bytes, "Remove source video");
         btnRemoveFiles.setIcon(imageIcon);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "all.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "start_16.png"));
         imageIcon = new ImageIcon(bytes, "Start converting");
         btnStartAll.setIcon(imageIcon);
 
-        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "start.png"));
-        imageIcon = new ImageIcon(bytes, "Start converting");
-        btnStartSelected.setIcon(imageIcon);
-
-        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "stop.png"));
+        bytes = Files.readAllBytes(Paths.get(USER_DIR_IMG, "stop_16.png"));
         imageIcon = new ImageIcon(bytes, "Stop converting");
         btnStop.setIcon(imageIcon);
 
@@ -163,10 +157,10 @@ public class Main {
 
     private void showDialogAbout() {
         JDialog dlgAbout = new JDialog(mainFrame, "About", true);
-        dlgAbout.setSize(540, 80);
+        dlgAbout.setSize(220, 80);
         dlgAbout.setLocationRelativeTo(mainFrame);
 
-        JLabel lblAbout = new JLabel("Made by Dmitry Zubanoff aka @javadimon with pleasure only for you. Enjoy! dmitry@zubanoff.com");
+        JLabel lblAbout = new JLabel("It's free, enjoy! dmitry@zubanoff.com");
         lblAbout.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         int gap = 5;
         dlgAbout.getContentPane().setLayout(new BorderLayout(gap, gap));
@@ -261,6 +255,10 @@ public class Main {
         Font btnAddFilesFont = this.$$$getFont$$$("JetBrains Mono", -1, -1, btnAddFiles.getFont());
         if (btnAddFilesFont != null) btnAddFiles.setFont(btnAddFilesFont);
         btnAddFiles.setForeground(new Color(-16744448));
+        btnAddFiles.setMargin(new Insets(0, 0, 0, 0));
+        btnAddFiles.setMaximumSize(new Dimension(18, 18));
+        btnAddFiles.setMinimumSize(new Dimension(18, 18));
+        btnAddFiles.setPreferredSize(new Dimension(18, 18));
         btnAddFiles.setText("");
         btnAddFiles.setToolTipText("Add files for convert");
         toolBar1.add(btnAddFiles);
@@ -269,20 +267,28 @@ public class Main {
         Font btnRemoveFilesFont = this.$$$getFont$$$("JetBrains Mono", -1, -1, btnRemoveFiles.getFont());
         if (btnRemoveFilesFont != null) btnRemoveFiles.setFont(btnRemoveFilesFont);
         btnRemoveFiles.setForeground(new Color(-3932160));
+        btnRemoveFiles.setMargin(new Insets(0, 0, 0, 0));
+        btnRemoveFiles.setMaximumSize(new Dimension(18, 18));
+        btnRemoveFiles.setMinimumSize(new Dimension(18, 18));
+        btnRemoveFiles.setPreferredSize(new Dimension(18, 18));
         btnRemoveFiles.setText("");
         btnRemoveFiles.setToolTipText("Remove selected files");
         toolBar1.add(btnRemoveFiles);
         btnStartAll = new JButton();
         btnStartAll.setEnabled(false);
+        btnStartAll.setMargin(new Insets(0, 0, 0, 0));
+        btnStartAll.setMaximumSize(new Dimension(18, 18));
+        btnStartAll.setMinimumSize(new Dimension(18, 18));
+        btnStartAll.setPreferredSize(new Dimension(18, 18));
         btnStartAll.setText("");
         btnStartAll.setToolTipText("Convert all files");
         toolBar1.add(btnStartAll);
-        btnStartSelected = new JButton();
-        btnStartSelected.setText("");
-        btnStartSelected.setToolTipText("Convert selected files");
-        toolBar1.add(btnStartSelected);
         btnStop = new JButton();
         btnStop.setEnabled(false);
+        btnStop.setMargin(new Insets(0, 0, 0, 0));
+        btnStop.setMaximumSize(new Dimension(18, 18));
+        btnStop.setMinimumSize(new Dimension(18, 18));
+        btnStop.setPreferredSize(new Dimension(18, 18));
         btnStop.setText("");
         btnStop.setToolTipText("Stop convertation");
         toolBar1.add(btnStop);

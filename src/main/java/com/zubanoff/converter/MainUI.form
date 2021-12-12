@@ -22,6 +22,10 @@
             <properties>
               <font name="JetBrains Mono"/>
               <foreground color="-16744448"/>
+              <margin top="0" left="0" bottom="0" right="0"/>
+              <maximumSize width="18" height="18"/>
+              <minimumSize width="18" height="18"/>
+              <preferredSize width="18" height="18"/>
               <text value=""/>
               <toolTipText value="Add files for convert"/>
             </properties>
@@ -32,6 +36,10 @@
               <enabled value="false"/>
               <font name="JetBrains Mono"/>
               <foreground color="-3932160"/>
+              <margin top="0" left="0" bottom="0" right="0"/>
+              <maximumSize width="18" height="18"/>
+              <minimumSize width="18" height="18"/>
+              <preferredSize width="18" height="18"/>
               <text value=""/>
               <toolTipText value="Remove selected files"/>
             </properties>
@@ -40,21 +48,22 @@
             <constraints/>
             <properties>
               <enabled value="false"/>
+              <margin top="0" left="0" bottom="0" right="0"/>
+              <maximumSize width="18" height="18"/>
+              <minimumSize width="18" height="18"/>
+              <preferredSize width="18" height="18"/>
               <text value=""/>
               <toolTipText value="Convert all files"/>
-            </properties>
-          </component>
-          <component id="c7150" class="javax.swing.JButton" binding="btnStartSelected">
-            <constraints/>
-            <properties>
-              <text value=""/>
-              <toolTipText value="Convert selected files"/>
             </properties>
           </component>
           <component id="9c248" class="javax.swing.JButton" binding="btnStop">
             <constraints/>
             <properties>
               <enabled value="false"/>
+              <margin top="0" left="0" bottom="0" right="0"/>
+              <maximumSize width="18" height="18"/>
+              <minimumSize width="18" height="18"/>
+              <preferredSize width="18" height="18"/>
               <text value=""/>
               <toolTipText value="Stop convertation"/>
             </properties>
