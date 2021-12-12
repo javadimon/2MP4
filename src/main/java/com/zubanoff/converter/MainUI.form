@@ -14,9 +14,23 @@
             <preferred-size width="-1" height="20"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <floatable value="false"/>
+          <margin top="0" left="0" bottom="0" right="0"/>
+        </properties>
         <border type="none"/>
         <children>
+          <component id="2d66" class="javax.swing.JToolBar$Separator">
+            <constraints/>
+            <properties>
+              <maximumSize width="10" height="10"/>
+              <minimumSize width="10" height="10"/>
+            </properties>
+          </component>
+          <component id="70d19" class="javax.swing.JToolBar$Separator">
+            <constraints/>
+            <properties/>
+          </component>
           <component id="75e48" class="javax.swing.JButton" binding="btnAddFiles">
             <constraints/>
             <properties>
@@ -43,6 +57,10 @@
               <text value=""/>
               <toolTipText value="Remove selected files"/>
             </properties>
+          </component>
+          <component id="9552a" class="javax.swing.JToolBar$Separator">
+            <constraints/>
+            <properties/>
           </component>
           <component id="39928" class="javax.swing.JButton" binding="btnStartAll">
             <constraints/>

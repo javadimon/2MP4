@@ -250,7 +250,13 @@ public class Main {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
         final JToolBar toolBar1 = new JToolBar();
+        toolBar1.setFloatable(false);
+        toolBar1.setMargin(new Insets(0, 0, 0, 0));
         mainPanel.add(toolBar1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null, 0, false));
+        final JToolBar.Separator toolBar$Separator1 = new JToolBar.Separator();
+        toolBar1.add(toolBar$Separator1);
+        final JToolBar.Separator toolBar$Separator2 = new JToolBar.Separator();
+        toolBar1.add(toolBar$Separator2);
         btnAddFiles = new JButton();
         Font btnAddFilesFont = this.$$$getFont$$$("JetBrains Mono", -1, -1, btnAddFiles.getFont());
         if (btnAddFilesFont != null) btnAddFiles.setFont(btnAddFilesFont);
@@ -274,6 +280,8 @@ public class Main {
         btnRemoveFiles.setText("");
         btnRemoveFiles.setToolTipText("Remove selected files");
         toolBar1.add(btnRemoveFiles);
+        final JToolBar.Separator toolBar$Separator3 = new JToolBar.Separator();
+        toolBar1.add(toolBar$Separator3);
         btnStartAll = new JButton();
         btnStartAll.setEnabled(false);
         btnStartAll.setMargin(new Insets(0, 0, 0, 0));
