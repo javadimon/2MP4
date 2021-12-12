@@ -15,10 +15,10 @@ func main() {
 		log.Println(err)
 	}
 
-	java := path + "\\lib\\jre\\bin\\java.exe"
+	java := path + "\\jre\\bin\\java.exe"
 	fmt.Println(java)
 
-	jar := path + "\\lib\\converter.jar"
+	jar := path + "\\converter.jar"
 	fmt.Println(jar)
 
 	cmd := exec.Command(java, "-jar", jar)

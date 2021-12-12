@@ -1,0 +1,4 @@
+create native launcher
+create installer
+create internet site
+create public repo in GitHub

@@ -1,5 +1,6 @@
 package com.zubanoff.converter;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -123,6 +124,9 @@ public class Converter {
             btnStop.setEnabled(false);
             btnStartAll.setEnabled(true);
             btnAddFiles.setEnabled(true);
+
+            final Runnable r = (Runnable) Toolkit.getDefaultToolkit().getDesktopProperty("win.sound.exclamation");
+            r.run();
         };
 
         Executors.newSingleThreadExecutor().execute(runnable);
