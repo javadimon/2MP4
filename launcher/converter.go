@@ -1,3 +1,4 @@
+//go:generate goversioninfo -icon=mp4.ico -manifest=goversioninfo.exe.manifest -64
 package main
 
 import (

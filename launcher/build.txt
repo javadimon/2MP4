@@ -1,1 +1,2 @@
-go build -ldflags "-H windowsgui" .\converter.go
+go generate
+go build -ldflags "-H windowsgui"
