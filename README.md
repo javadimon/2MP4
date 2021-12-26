@@ -2,9 +2,9 @@
 
 2MP4 Converter it's easy to use desktop application for convert any video format to mp4, based on ffmpeg project.
 
-![image info](./img/2MP4.png)
+[**Download last 2MP4 release (Windows)**](https://github.com/javadimon/2MP4/releases/download/v.1.0/2mp4-setup.exe)
 
-[**Download last release (Windows)**](https://github.com/javadimon/2MP4/releases/download/v.1.0/2mp4-setup.exe)
+![image info](./img/2MP4.png)
 
 Just add files for convert, push convert button, wait and enjoy.
 
