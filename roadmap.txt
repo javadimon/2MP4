@@ -1,0 +1,3 @@
+add EST indicator
+check audio tracks
+customize speed/quality setting
