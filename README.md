@@ -4,7 +4,7 @@
 
 ![image info](./img/2MP4.png)
 
-[Download last release (Windows)](https://github.com/javadimon/2MP4/releases/download/v.1.0/2mp4-setup.exe)
+[**Download last release (Windows)**](https://github.com/javadimon/2MP4/releases/download/v.1.0/2mp4-setup.exe)
 
 Just add files for convert, push convert button, wait and enjoy.
 
