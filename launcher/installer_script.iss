@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "2MP4"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "dmitry@zubanoff.com"
 #define MyAppURL "https://2mp4.zubanoff.com"
 #define MyAppExeName "2mp4.exe"
